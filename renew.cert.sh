@@ -16,7 +16,7 @@ then
 	echo "requesting cert"
 	for i in $(grep domains $1  | cut -f2- -d=);
 	do
-		/opt/letsencrypt/letsencrypt-auto certonly --standalone -d $i --register-unsafely-without-email
+		/opt/letsencrypt/letsencrypt-auto certonly --standalone -d $i --agree-tos --non-interactive --email "$(grep email $1 | sed 's@[ ]*email[ ]*=[ ]*@@')"
 	done
 	
 	exit 0
