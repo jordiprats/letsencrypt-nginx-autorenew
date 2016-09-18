@@ -18,6 +18,8 @@ then
 	do
 		/opt/letsencrypt/letsencrypt-auto certonly --standalone -d $i --register-unsafely-without-email
 	done
+	
+	exit 0
 fi
 
 DATEEXP=$(date -d '10000 years' +%s)
