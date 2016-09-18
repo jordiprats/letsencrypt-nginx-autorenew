@@ -10,6 +10,15 @@ then
 	echo
 	exit 1
 fi
+
+if [ ! -d "/etc/letsencrypt/live/" ];
+then
+	echo "requesting cert"
+	for i in $(grep domains $1  | cut -f2- -d=);
+	do
+		/opt/letsencrypt/letsencrypt-auto certonly --standalone -d $i --register-unsafely-without-email
+	done
+
 DATEEXP=$(date -d '10000 years' +%s)
 
 for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
