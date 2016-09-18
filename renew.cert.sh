@@ -27,7 +27,10 @@ REMAINING_DAYS=$(($(($DATEEXP-$(date +%s)))/86400))
 if [ "$REMAINING_DAYS" -lt 15 ];
 then
 	echo autorenew
-	/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=/usr/share/nginx/html -d gitnific.cm.atlasit.com && service nginx restart
+	for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
+	do
+		/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path="$(grep webroot-path $1 | sed 's@[ ]*webroot-path[ ]*=[ ]*@@')" -d "$(basename $i)" && service nginx restart
+	done
 else
 	echo "certificate up to date, remainig days: $REMAINING_DAYS"
 fi
