@@ -21,7 +21,7 @@ done
 
 REMAINING_DAYS=$(($(($DATEEXP-$(date +%s)))/86400))
 
-if [ "$REMAINING_DAYS" -lt 10 ];
+if [ "$REMAINING_DAYS" -lt 21 ];
 then
 	echo autorenew
 	/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=/usr/share/nginx/html -d gitnific.cm.atlasit.com && service nginx restart
