@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cd /opt/letsencrypt
+git pull
+
 if [ -z "$1" ];
 then
 	echo "usage:"
@@ -7,6 +10,18 @@ then
 	echo
 	exit 1
 fi
+
+if [ ! -d "/etc/letsencrypt/live/" ];
+then
+	echo "requesting cert"
+	for i in $(grep domains $1  | cut -f2- -d=);
+	do
+		/opt/letsencrypt/letsencrypt-auto certonly --standalone -d $i --agree-tos --non-interactive --email "$(grep email $1 | sed 's@[ ]*email[ ]*=[ ]*@@')"
+	done
+	
+	exit 0
+fi
+
 DATEEXP=$(date -d '10000 years' +%s)
 
 for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
@@ -24,7 +39,10 @@ REMAINING_DAYS=$(($(($DATEEXP-$(date +%s)))/86400))
 if [ "$REMAINING_DAYS" -lt 21 ];
 then
 	echo autorenew
-	/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path=/usr/share/nginx/html -d gitnific.cm.atlasit.com && service nginx restart
+	for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
+	do
+		/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path="$(grep webroot-path $1 | sed 's@[ ]*webroot-path[ ]*=[ ]*@@')" -d "$(basename $i)" && service nginx restart
+	done
 else
 	echo "certificate up to date, remainig days: $REMAINING_DAYS"
 fi
