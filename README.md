@@ -1,6 +1,6 @@
 # letsencrypt-nginx-autorenew
 
-certificate autorenew for nginx
+certificate autorenew for nginx (certificate auto renewal at 21 days to expire so you don't get emails remainding you to do it unless something goes wrong)
 
 ## configuration
 
