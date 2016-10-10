@@ -36,7 +36,7 @@ done
 
 REMAINING_DAYS=$(($(($DATEEXP-$(date +%s)))/86400))
 
-if [ "$REMAINING_DAYS" -lt 15 ];
+if [ "$REMAINING_DAYS" -lt 21 ];
 then
 	echo autorenew
 	for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
