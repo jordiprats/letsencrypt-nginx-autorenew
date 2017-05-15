@@ -36,12 +36,13 @@ done
 
 REMAINING_DAYS=$(($(($DATEEXP-$(date +%s)))/86400))
 
-if [ "$REMAINING_DAYS" -lt 21 ];
+if [ "$REMAINING_DAYS" -le 20 ];
 then
 	echo autorenew
 	for i in $(find /etc/letsencrypt/live/ -iname $(grep domains $1  | cut -f2- -d=));
 	do
-		/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path="$(grep webroot-path $1 | sed 's@[ ]*webroot-path[ ]*=[ ]*@@')" -d "$(basename $i)" && service nginx restart
+		/opt/letsencrypt/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --webroot-path="$(grep webroot-path $1 | sed 's@[ ]*webroot-path[ ]*=[ ]*@@')" -d "$(basename $i)"
+		service nginx restart
 	done
 else
 	echo "certificate up to date, remainig days: $REMAINING_DAYS"
